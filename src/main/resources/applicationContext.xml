@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- values.properties dosyasından ayarları alır (ör: database.connectionString) -->
+    <context:property-placeholder location="classpath:values.properties"/>
+
+    <!--
+         'database' bean'i: ICustomerDal implementasyonlarından biri.
+         Burada MsSqlCustomerDal kullanılıyor ve connectionString property
+         values.properties içindeki database.connectionString ile set ediliyor.
+    -->
+    <bean id="database" class="org.example.MsSqlCustomerDal">
+        <property name="connectionString" value="${database.connectionString}"></property>
+    </bean>
+
+    <!--
+         'service' bean'i: CustomerManager sınıfı. customerDal bağımlılığı setter injection ile veriliyor.
+         Alternatif olarak constructor injection (yorum satırındaki örnek) kullanılabilir.
+    -->
+    <bean id="service" class = "org.example.CustomerManager">
+        <!--<constructor-arg ref="database"/>-->
+        <property name="customerDal" ref="database"></property>
+    </bean>
+
+</beans>
